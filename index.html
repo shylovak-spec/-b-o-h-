@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin An toàn Hóa chất (Nhà máy Việt Nam)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #374151;
+            padding: 1rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .info-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        .info-panel {
+            background-color: #e5e7eb;
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: left;
+            width: 100%;
+        }
+        .info-panel ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+        .info-panel li {
+            margin-bottom: 0.5rem;
+        }
+        .list-item {
+            background-color: #e5e7eb;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+            text-decoration: none;
+            color: #1f2937;
+            font-weight: 600;
+        }
+        .list-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .fixed-image {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+        @media (min-width: 640px) {
+            .container.detail-view {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 2rem;
+            }
+            .info-container {
+                align-items: center;
+            }
+            .content-section {
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 2rem;
+            }
+            .image-and-buttons {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            .image-and-buttons img {
+                width: 200px;
+                height: 200px;
+            }
+            .buttons-container {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="appContainer" class="container">
+        
+        <!-- Màn hình chính (Trang danh sách) -->
+        <div id="mainView" class="w-full">
+            <h1 class="text-2xl font-bold mb-4 text-center sm:text-left">Danh mục Hóa chất Sử dụng (Việt Nam)</h1>
+            
+            <div class="mb-6">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm hóa chất..." class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+            </div>
+
+            <div id="substanceList" class="space-y-4"></div>
+        </div>
+
+        <!-- Màn hình chi tiết -->
+        <div id="detailView" class="hidden w-full">
+            <div class="w-full text-left mb-2">
+                <button onclick="showMainView()" class="text-black text-3xl font-bold transition-all duration-300 transform hover:scale-110 focus:outline-none px-2">
+                    &larr;
+                </button>
+            </div>
+            <div id="detailContent" class="w-full flex flex-col sm:flex-row gap-8">
+                <!-- Nội dung chi tiết được tạo bằng JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const substanceData = {
+            'Dung dịch làm sạch AQUANOX A4651US': {
+                image: 'https://raw.githubusercontent.com/shylovak-spec/ziz/refs/heads/main/images/AQUANOX%20A4651US.jpg',
+                dangers: `
+                    <h3 class="font-bold text-lg mb-2">Mối nguy hại (Hazards)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li>H360: Có thể gây hại cho khả năng sinh sản hoặc thai nhi qua đường tiêu hóa.</li>
+                        <li>H314: Gây bỏng da nghiêm trọng và tổn thương mắt.</li>
+                        <li>H318: Gây tổn thương mắt nghiêm trọng.</li>
+                    </ul>
+                `,
+                actions: `
+                    <h3 class="font-bold text-lg mb-2">Sơ cứu khi gặp sự cố (First Aid)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li><b>Bắn vào mắt:</b> Rửa sạch ngay bằng nhiều nước trong ít nhất 10 phút. Đến cơ sở y tế gần nhất.</li>
+                        <li><b>Hít phải:</b> Đưa nạn nhân ra nơi thoáng khí, nới lỏng quần áo chật (cổ áo, thắt lưng).</li>
+                        <li><b>Dính vào da:</b> Rửa sạch vùng da tiếp xúc với nhiều nước trong 10 phút. Thay quần áo bị dính hóa chất.</li>
+                        <li><b>Nuốt phải:</b> Súc miệng ngay bằng nhiều nước. Cho uống một lượng nước nhỏ. Không cố gây nôn.</li>
+                    </ul>
+                `,
+                protection: `
+                    <h3 class="font-bold text-lg mb-2">Trang thiết bị bảo hộ (PPE)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li>Găng tay bảo hộ Nitrile hoặc Neoprene chống hóa chất.</li>
+                        <li>Kính bảo hộ kín (hoặc mặt nạ che toàn bộ khuôn mặt).</li>
+                        <li>Tạp dề/áo khoác bảo hộ chống hóa chất.</li>
+                    </ul>
+                `,
+                industrialApplication: `
+                    <h3 class="font-bold text-lg mb-2">Ứng dụng sản xuất (Application)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li>Sử dụng làm sạch dung dịch tẩy rửa bo mạch SMT/Chất tẩy rửa siêu âm (Ultrasonic).</li>
+                        <li>Bảo trì và vệ sinh thiết bị công nghiệp.</li>
+                    </ul>
+                `
+            },
+            'Cồn Isopropyl alcohol (IPA 99.9%)': {
+                image: 'https://raw.githubusercontent.com/shylovak-spec/ziz/refs/heads/main/images/shopping.webp',
+                dangers: `
+                    <h3 class="font-bold text-lg mb-2">Mối nguy hại (Hazards)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li>H225: Chất lỏng và hơi rất dễ cháy.</li>
+                        <li>H319: Gây kích ứng mắt nghiêm trọng.</li>
+                        <li>H336: Có thể gây buồn ngủ hoặc chóng mặt.</li>
+                    </ul>
+                `,
+                actions: `
+                    <h3 class="font-bold text-lg mb-2">Sơ cứu khi gặp sự cố (First Aid)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li><b>Bắn vào mắt:</b> Rửa bằng nước sạch trong 10 phút.</li>
+                        <li><b>Hít phải:</b> Di chuyển ra khu vực thông thoáng không khí.</li>
+                        <li><b>Dính vào da:</b> Rửa sạch với nước và xà phòng.</li>
+                    </ul>
+                `,
+                protection: `
+                    <h3 class="font-bold text-lg mb-2">Trang thiết bị bảo hộ (PPE)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li>Găng tay Nitrile.</li>
+                        <li>Kính bảo hộ lao động.</li>
+                    </ul>
+                `,
+                industrialApplication: `
+                    <h3 class="font-bold text-lg mb-2">Ứng dụng sản xuất (Application)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li>Tẩy rửa linh kiện điện tử, lau chùi máy móc SMT/DIP.</li>
+                    </ul>
+                `
+            }
+        };
+
+        function renderList(searchTerm = '') {
+            const substanceList = document.getElementById('substanceList');
+            substanceList.innerHTML = '';
+
+            const normalizedSearch = searchTerm.toLowerCase().trim();
+            let hasResults = false;
+
+            for (const substance in substanceData) {
+                if (substance.toLowerCase().includes(normalizedSearch)) {
+                    hasResults = true;
+                    const listItem = document.createElement('a');
+                    listItem.href = '#';
+                    listItem.classList.add('list-item');
+                    listItem.textContent = substance;
+                    listItem.onclick = (e) => {
+                        e.preventDefault();
+                        showDetailView(substance);
+                    };
+                    substanceList.appendChild(listItem);
+                }
+            }
+
+            if (!hasResults) {
+                substanceList.innerHTML = `<p class="text-gray-500 text-center py-4">Không tìm thấy hóa chất phù hợp.</p>`;
+            }
+        }
+
+        function showMainView() {
+            document.getElementById('mainView').classList.remove('hidden');
+            document.getElementById('detailView').classList.add('hidden');
+            document.getElementById('appContainer').classList.remove('detail-view');
+        }
+
+        function showDetailView(substanceName) {
+            const data = substanceData[substanceName];
+            if (!data) return;
+
+            const detailContent = document.getElementById('detailContent');
+            detailContent.innerHTML = `
+                <div class="info-container w-full sm:w-1/2">
+                    <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-center w-full">${substanceName}</h2>
+                    <div class="image-and-buttons flex flex-col items-center w-full">
+                        <img src="${data.image}" alt="Hình ảnh ${substanceName}" class="rounded-lg mb-4 fixed-image">
+                        <div class="buttons-container w-full sm:w-auto">
+                            <button onclick='showSubstanceInfo(${JSON.stringify(substanceName)}, "dangers")' class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 mb-2">Nguy hại (Hazards)</button>
+                            <button onclick='showSubstanceInfo(${JSON.stringify(substanceName)}, "actions")' class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 mb-2">Sơ cứu (First Aid)</button>
+                            <button onclick='showSubstanceInfo(${JSON.stringify(substanceName)}, "protection")' class="w-full bg-lime-600 hover:bg-lime-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 mb-2">Bảo hộ (PPE)</button>
+                            <button onclick='showSubstanceInfo(${JSON.stringify(substanceName)}, "industrialApplication")' class="w-full bg-neutral-400 hover:bg-neutral-500 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105">Ứng dụng (Application)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="substanceInfoDisplay" class="info-panel mt-4 sm:mt-0 w-full sm:w-1/2">
+                    <p class="text-gray-600">Nhấn vào các nút bên trái để xem thông tin chi tiết.</p>
+                </div>
+            `;
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('detailView').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('detail-view');
+        }
+
+        function showSubstanceInfo(substanceName, infoType) {
+            const displayPanel = document.getElementById('substanceInfoDisplay');
+            displayPanel.innerHTML = substanceData[substanceName][infoType];
+        }
+
+        function initializeApp() {
+            renderList();
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', (e) => {
+                renderList(e.target.value);
+            });
+        }
+
+        window.onload = initializeApp;
+    </script>
+</body>
+</html>
